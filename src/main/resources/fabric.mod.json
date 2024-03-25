@@ -3,12 +3,12 @@
   "id": "bettertips",
   "version": "${version}",
   "name": "betterTips",
-  "description": "",
+  "description": "A good mod for better tips like dying tip and login tip",
   "authors": [],
   "contact": {
     "repo": "https://github.com/liangmi/betterTips"
   },
-  "license": "All-Rights-Reserved",
+  "license": "Apache v2.0",
   "icon": "assets/bettertips/icon.png",
   "environment": "*",
   "entrypoints": {
