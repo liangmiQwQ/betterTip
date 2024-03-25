@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "bettertips",
+  "version": "${version}",
+  "name": "betterTips",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/liangmi/betterTips"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/bettertips/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.mirolls.bettertips.client.BetterTipsClient"
+    ],
+    "main": [
+      "net.mirolls.bettertips.BetterTips"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
