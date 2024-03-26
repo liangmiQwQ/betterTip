@@ -12,13 +12,13 @@
   "icon": "assets/bettertips/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "net.mirolls.bettertips.client.BetterTipsClient"
-    ],
     "main": [
       "net.mirolls.bettertips.BetterTips"
     ]
   },
+  "mixins": [
+    "bettertips.mixins.json",
+  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",

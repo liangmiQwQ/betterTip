@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.mirolls.bettertips.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BetterTipsMixin",
+    "BetterTipsDied"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
