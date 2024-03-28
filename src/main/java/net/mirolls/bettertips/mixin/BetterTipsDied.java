@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BetterTipsDied {
     @Shadow @Final @Nullable private Entity source;
 
-    @Inject(method="getDeathMessage", at= @At("RETURN"))
+    @Inject(method="getDeathMessage", at= @At("RETURN"), cancellable = true)
     private void onDeath(LivingEntity killed, CallbackInfoReturnable<Text> cir){
         System.out.printf("[BetterTips]%s was killed",killed.getName().getString());
 
