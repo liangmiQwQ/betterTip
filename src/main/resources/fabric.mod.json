@@ -17,7 +17,7 @@
     ]
   },
   "mixins": [
-    "bettertips.mixins.json",
+    "bettertips.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

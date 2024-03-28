@@ -24,8 +24,8 @@ public abstract class BetterTipsDied {
         // 处理死亡原因
         DamageSource source = (DamageSource)(Object)this; // 将当前Mixin实例转换为DamageSource
         DamageType deathType = source.getType(); // 使用msgId字段获取死亡类型的ID
-
-
+        System.out.printf(String.valueOf(deathType));
+        cir.setReturnValue( Text.literal(deathType.toString() + String.valueOf(deathType)));
 //        killed.onDeath();
     }
 }
