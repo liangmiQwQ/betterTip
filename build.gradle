@@ -18,6 +18,11 @@ repositories {
     // for more information about repositories.
 }
 
+configurations {
+    jarDependency
+}
+
+
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -26,6 +31,8 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '2.0'
+    jarDependency group: 'org.yaml', name: 'snakeyaml', version: '2.0'
 }
 
 processResources {
@@ -66,7 +73,14 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+        rename { "${it}_${project.archivesBaseName}" }
+    }
+
+    // 从jarDependency配置中收集依赖项并包含进jar
+    from {
+        configurations.jarDependency.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
     }
 }
 

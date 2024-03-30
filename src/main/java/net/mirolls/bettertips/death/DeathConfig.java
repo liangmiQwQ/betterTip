@@ -43,6 +43,15 @@ public class DeathConfig {
 
 
     private static boolean isConfigFileHere() {
+        File gameDir = new File(".");
+        File bettertipsFolder = new File(gameDir, "bettertips");
+        if (!bettertipsFolder.exists()) {
+            // 没有目录
+            return false;
+        }
+        File configFile = new File(bettertipsFolder, "death.config.yaml");
+        // 没有文件
+        return configFile.exists(); // 有文件返回true, 没文件返回false
     }
 
     public static String getMsg(String playerName, String deathMsgID) {
