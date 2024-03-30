@@ -3,13 +3,13 @@
   "package": "net.mirolls.bettertips.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BetterTipsMixin",
-    "BetterTipsDied"
+    "BetterTipsDied",
+    "BetterTipsEntityDeath",
+    "BetterTipsMixin"
   ],
   "server": [],
   "client": [],
   "injectors": {
     "defaultRequire": 1
   }
-
 }
