@@ -1,0 +1,10 @@
+# default 字段用于存储对未特殊注明玩家对默认死亡信息
+default:
+  # 允许使用变量 杀手: ${killer} 死者: ${departed} 武器: ${weapon}
+  # key名请参考 https://zh.minecraft.wiki/w/%E6%AD%BB%E4%BA%A1%E6%B6%88%E6%81%AF [minecraft.wiki死亡消息]
+  death.attack.player:
+    color: "red" # 可以使用minecraft的各种允许颜色
+    message: "有一个叫做${departed}的蠢材被${killer}暗杀"
+  death.attack.player.item:
+    color: "colorful" # 这里的colorful是随机颜色
+    message: "有一个叫做${departed}的蠢材被${killer}用${weapon}暗杀"

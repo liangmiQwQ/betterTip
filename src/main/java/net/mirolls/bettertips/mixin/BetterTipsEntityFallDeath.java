@@ -24,4 +24,9 @@ public abstract class BetterTipsEntityFallDeath {
         LOGGER.info("[BetterTips]摔落被击致人死亡");
 
     }
+
+    @Inject(method = "getDeathMessage", at = @At("RETURN"))
+    private void getDeathMessage(CallbackInfoReturnable<Text> cir) {
+        DamageTracker tracker = (DamageTracker) (Object) this;
+    }
 }
