@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import static net.mirolls.bettertips.BetterTips.LOGGER;
 
 @Mixin(DamageSource.class)
-public abstract class BetterTipsDied {
+public abstract class BetterTipsDeath {
     @Inject(method = "getDeathMessage", at = @At("RETURN"), cancellable = true)
     private void onDeath(LivingEntity killed, CallbackInfoReturnable<Text> cir) {
         // 处理死亡原因
