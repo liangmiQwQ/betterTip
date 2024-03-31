@@ -19,37 +19,34 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.io.IOException;
 import java.util.Objects;
 
-import static net.mirolls.bettertips.BetterTips.LOGGER;
-
 
 @Mixin(DamageTracker.class)
 public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
-    @Inject(method = "getDeathMessage", at = @At("RETURN"))
+    @Inject(method = "getDeathMessage", at = @At("RETURN"), cancellable = true)
     private void getDeathMessage(CallbackInfoReturnable<Text> cir) {
         DamageTracker tracker = (DamageTracker) (Object) this;
         MessageInfo messageInfo = null;
         if (this.getRecentDamage().isEmpty()) {
             // death.attack.generic 非常纯粹
             messageInfo = new MessageInfo("death.attack.generic", null, null, null);
+        } else {
+            DamageRecord damageRecord = this.getRecentDamage().get(this.getRecentDamage().size() - 1);
+            DamageSource damageSource = damageRecord.damageSource();
+            DeathMessageType deathMessageType = damageSource.getType().deathMessageType();
+            DamageRecord damageRecord2 = this.getBiggestFall();
+            if (deathMessageType == DeathMessageType.FALL_VARIANTS && damageRecord2 != null) {
+                // 模仿DamageTracker，获取id
+                messageInfo = this.getFallDeathInfo(damageRecord2, damageSource.getAttacker());
+            } else {
+                if (deathMessageType == DeathMessageType.INTENTIONAL_GAME_DESIGN) {
+                    // 床爆炸的死亡信息
+                    String string = "death.attack." + damageSource.getName();
+                    messageInfo = new MessageInfo(string + ".message", Objects.requireNonNull(this.getEntity().getDisplayName()).getString(), null, null);
+                } else {
+                    messageInfo = this.getAttackInfo(damageSource, this.getEntity());
+                }
+            }
         }
-        DamageRecord damageRecord = this.getRecentDamage().get(this.getRecentDamage().size() - 1);
-        DamageSource damageSource = damageRecord.damageSource();
-        DeathMessageType deathMessageType = damageSource.getType().deathMessageType();
-        DamageRecord damageRecord2 = this.getBiggestFall();
-        if (deathMessageType == DeathMessageType.FALL_VARIANTS && damageRecord2 != null) {
-            // 模仿DamageTracker，获取id
-            messageInfo = this.getFallDeathInfo(damageRecord2, damageSource.getAttacker());
-            LOGGER.info(messageInfo.getDeathID());
-            return;
-        }
-        if (deathMessageType == DeathMessageType.INTENTIONAL_GAME_DESIGN) {
-            // 床爆炸的死亡信息
-            String string = "death.attack." + damageSource.getName();
-            messageInfo = new MessageInfo(string + ".message", Objects.requireNonNull(this.getEntity().getDisplayName()).getString(), null, null);
-            LOGGER.info(messageInfo.getDeathID());
-        }
-        // 如果很巧，上面的都不是
-        messageInfo = this.getAttackInfo(damageSource, this.getEntity());
 
 
         // 结下来，是最喜欢的颜色～
