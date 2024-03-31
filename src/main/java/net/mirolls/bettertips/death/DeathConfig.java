@@ -116,6 +116,8 @@ public class DeathConfig {
     private static DeathConfigYaml getConfig() throws IOException {
         Yaml yaml = new Yaml();
         InputStream inputStream = Files.newInputStream(Paths.get("bettertips/death.config.yaml"));
-        return yaml.load(inputStream);
+//        return yaml.load(inputStream);
+        // To fix Caused by: java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class net.mirolls.bettertips.death.DeathConfigYaml (java.util.LinkedHashMap is in module java.base of loader 'bootstrap'; net.mirolls.bettertips.death.DeathConfigYaml is in unnamed module of loader
+        return yaml.loadAs(inputStream, DeathConfigYaml.class);
     }
 }
