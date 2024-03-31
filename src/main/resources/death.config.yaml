@@ -8,3 +8,12 @@ global:
   death.attack.player.item:
     color: "colorful" # 这里的colorful是随机颜色
     message: "有一个叫做${departed}的蠢材被${killer}用${weapon}暗杀"
+
+player:
+  liangmimi:
+    death.attack.lava:
+      color: "colorful"
+      message: "有一个叫做${departed}的蠢材被岩浆烫死了"
+    death.attack.lava.player:
+      color: "blue"
+      message: "有一个叫做${departed}的蠢材在被${killer}追赶的时候滑入岩浆而死"
