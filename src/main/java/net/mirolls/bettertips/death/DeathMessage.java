@@ -4,11 +4,13 @@ public class DeathMessage {
     private String color;
     private String message;
 
-    String getMessage() {
+    // IDEA他给我生成的getter和setter少了public是个什么情况啊啊啊
+    // To Fix Caused by: Cannot create property=message for JavaBean=net.mirolls.bettertips.death.DeathMessage@2b676779
+    public String getMessage() {
         return message;
     }
 
-    void setMessage(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
