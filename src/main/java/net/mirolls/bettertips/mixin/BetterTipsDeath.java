@@ -21,14 +21,13 @@ import static net.mirolls.bettertips.BetterTips.LOGGER;
 
 @Mixin(DamageTracker.class)
 public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
-
     @Inject(method = "getDeathMessage", at = @At("RETURN"))
     private void getDeathMessage(CallbackInfoReturnable<Text> cir) {
         DamageTracker tracker = (DamageTracker) (Object) this;
+        MessageInfo messageInfo = null;
         if (this.getRecentDamage().isEmpty()) {
             // death.attack.generic 非常纯粹
-            LOGGER.info("death.attack.generic");
-            return;
+            messageInfo = new MessageInfo("death.attack.generic", null, null, null);
         }
         DamageRecord damageRecord = this.getRecentDamage().get(this.getRecentDamage().size() - 1);
         DamageSource damageSource = damageRecord.damageSource();
@@ -36,12 +35,20 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
         DamageRecord damageRecord2 = this.getBiggestFall();
         if (deathMessageType == DeathMessageType.FALL_VARIANTS && damageRecord2 != null) {
             // 模仿DamageTracker，获取id
-            LOGGER.info(this.getFallDeathID(damageRecord2, damageSource.getAttacker()).getDeathID());
+            messageInfo = this.getFallDeathInfo(damageRecord2, damageSource.getAttacker());
+            LOGGER.info(messageInfo.getDeathID());
+            return;
+        }
+        if (deathMessageType == DeathMessageType.INTENTIONAL_GAME_DESIGN) {
+            // 床爆炸的死亡信息
+            String string = "death.attack." + damageSource.getName();
+            messageInfo = new MessageInfo(string + ".message", Objects.requireNonNull(this.getEntity().getDisplayName()).getString(), null, null);
+            LOGGER.info(messageInfo.getDeathID());
         }
     }
 
     @Unique
-    private MessageInfo getFallDeathID(DamageRecord damageRecord, @Nullable Entity attacker) {
+    private MessageInfo getFallDeathInfo(DamageRecord damageRecord, @Nullable Entity attacker) {
         DamageSource damageSource = damageRecord.damageSource();
         // 处理无助攻者的情况
         if (damageSource.isIn(DamageTypeTags.IS_FALL) || damageSource.isIn(DamageTypeTags.ALWAYS_MOST_SIGNIFICANT_FALL)) {
@@ -59,19 +66,20 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             // minecraft官方的代码是调用了getAttackedFallDeathMessage，然后根据这个实体是否有item进行的死亡消息确认
             // death.fell.finish(.item)也是同理
             // 为了代码的可读性，我拆分了一个方法getAttackedFallDeathID，返回String
-            return this.getAttackedFallDeathID(entity, text2, "death.fell.assist.item", "death.fell.assist");
+            return this.getAttackedFallDeathInfo(entity, text2, "death.fell.assist.item", "death.fell.assist");
         }
         if (text != null) {
-            return this.getAttackedFallDeathID(attacker, text2, "death.fell.finish.item", "death.fell.finish");
+            return this.getAttackedFallDeathInfo(attacker, text2, "death.fell.finish.item", "death.fell.finish");
         }
         // 默认情况
         return new MessageInfo("death.fell.killer", Objects.requireNonNull(this.getEntity().getDisplayName()).getString(), null, null);
     }
 
     @Unique
-    private MessageInfo getAttackedFallDeathID(Entity attacker, Text attackerDisplayName, String itemDeathTranslationKey, String deathTranslationKey) {
+    private MessageInfo getAttackedFallDeathInfo(Entity attacker, Text attackerDisplayName, String itemDeathTranslationKey, String deathTranslationKey) {
         // 对应着getAttackedFallDeathMessage方法
-        // 顺便批评一下mojang, 他的目标是把id和message混着一起生成，我是彻彻底底的先生成id，然后有的东西怕再查可以先顺便return过去
+        // 顺便批评一下mojang, 他的目标是把id和message混着一起生成
+        // 我的想法是先生成id，要的东西全部丢messageInfo里，然后由getDeathMessage生成信息
         ItemStack itemStack;
         // 定义一个ItemStack，如果攻击者是LivingEntity（生物实体）的实例，那么获取其主手中的物品栈。如果不是，将itemStack设置为ItemStack.EMPTY，表示空物品栈。
         if (attacker instanceof LivingEntity livingEntity) {
@@ -89,4 +97,36 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             return new MessageInfo(deathTranslationKey, Objects.requireNonNull(this.getEntity().getDisplayName()).getString(), attackerDisplayName.getString(), null);
         }
     }
+
+    @Unique
+    private MessageInfo getAttackInfo(DamageSource damageSource, LivingEntity killed) {
+        // 这个方法其实对应DamageSource的getDeathMessage
+        // 为了防止无限的getter，创建一下变量
+        Entity attacker = damageSource.getAttacker();
+        Entity source = damageSource.getSource();
+
+        String string = "death.attack." + damageSource.getType().msgId();
+        if (attacker != null || source != null) {
+            ItemStack itemStack;
+            Text text = attacker == null ? source.getDisplayName() : attacker.getDisplayName();
+            if (attacker instanceof LivingEntity livingEntity) {
+                itemStack = livingEntity.getMainHandStack();
+            } else {
+                itemStack = ItemStack.EMPTY;
+            }
+            if (!itemStack.isEmpty() && itemStack.hasCustomName()) {
+                return new MessageInfo(string + ".item", Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(text).getString(), itemStack.toHoverableText().getString());
+            }
+        }
+        LivingEntity livingEntity2 = killed.getPrimeAdversary();
+        // Mojang在他的源代码是这样写的 String string2 = string + ".player";
+        // Mojang变量命名生草无比
+        String deceased = string + ".player";
+        if (livingEntity2 != null) {
+            return new MessageInfo(deceased, Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(livingEntity2.getDisplayName()).getString(), null);
+        }
+        return new MessageInfo(string, Objects.requireNonNull(killed.getDisplayName()).getString(), null, null);
+
+    }
+
 }
