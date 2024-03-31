@@ -24,8 +24,7 @@ import java.util.Objects;
 public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
     @Inject(method = "getDeathMessage", at = @At("RETURN"), cancellable = true)
     private void getDeathMessage(CallbackInfoReturnable<Text> cir) {
-        DamageTracker tracker = (DamageTracker) (Object) this;
-        MessageInfo messageInfo = null;
+        MessageInfo messageInfo;
         if (this.getRecentDamage().isEmpty()) {
             // death.attack.generic 非常纯粹
             messageInfo = new MessageInfo("death.attack.generic", null, null, null);
