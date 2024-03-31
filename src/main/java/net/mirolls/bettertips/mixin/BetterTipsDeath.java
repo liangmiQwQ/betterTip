@@ -45,6 +45,11 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             messageInfo = new MessageInfo(string + ".message", Objects.requireNonNull(this.getEntity().getDisplayName()).getString(), null, null);
             LOGGER.info(messageInfo.getDeathID());
         }
+        // 如果很巧，上面的都不是
+        messageInfo = this.getAttackInfo(damageSource, this.getEntity());
+
+
+        // 结下来，是最喜欢的颜色～
     }
 
     @Unique
