@@ -11,4 +11,12 @@ public class DeathMessage {
     void setMessage(String message) {
         this.message = message;
     }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

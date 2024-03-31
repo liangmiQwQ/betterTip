@@ -4,7 +4,9 @@ import java.util.Map;
 
 public class DeathConfigYaml {
     private Map<String, DeathMessage> global;
-    
+    private Map<String, Map<String, DeathMessage>> player;
+
+
     public Map<String, DeathMessage> getGlobal() {
         return global;
     }
@@ -13,5 +15,12 @@ public class DeathConfigYaml {
         this.global = global;
     }
 
+    public Map<String, Map<String, DeathMessage>> getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Map<String, Map<String, DeathMessage>> player) {
+        this.player = player;
+    }
 }
 

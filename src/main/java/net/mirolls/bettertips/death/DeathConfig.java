@@ -1,5 +1,6 @@
 package net.mirolls.bettertips.death;
 
+import net.minecraft.text.Text;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -62,15 +63,54 @@ public class DeathConfig {
         }
     }
 
-    public static String getMsg(String playerName, String deathMsgID) {
-        initConfig();
-        return "";
+    public static String getMsg(String playerName, String deathMsgID) throws IOException {
+        initConfig(); // 初始化配置，这里假设这个方法加载或者刷新了配置
+        DeathConfigYaml config = getConfig(); // 获取配置实例，这里假设这个方法返回配置的当前状态
 
+        // 首先检查是否有针对特定玩家的配置
+        if (config.getPlayer().get(playerName) == null) {
+            // 如果没有特定玩家的配置，检查全局配置
+            if (config.getGlobal().get(deathMsgID) == null || config.getGlobal().get(deathMsgID).getMessage() == null) {
+                // 如果全局配置中也没有这个消息ID，或者消息内容为null，返回默认消息
+                return Text.translatable(deathMsgID).getString();
+            } else {
+                // 如果全局配置中有这个消息ID，并且消息内容不为null，返回该消息内容
+                return config.getGlobal().get(deathMsgID).getMessage();
+            }
+        } else {
+            // 如果有针对特定玩家的配置，检查这个玩家是否有针对该死亡消息ID的配置
+            if (config.getPlayer().get(playerName).get(deathMsgID) == null || config.getPlayer().get(playerName).get(deathMsgID).getMessage() == null) {
+                // 如果玩家没有对这个死亡消息ID进行配置，或者配置的消息内容为null，返回默认消息
+                return Text.translatable(deathMsgID).getString(); //这才是真的默认消息
+            } else {
+                // 如果玩家对这个死亡消息ID进行了配置，并且消息内容不为null，返回该消息内容
+                return config.getPlayer().get(playerName).get(deathMsgID).getMessage();
+            }
+        }
     }
 
-    public static String getColor(String playerName, String deathMsgID) {
+    public static String getColor(String playerName, String deathMsgID) throws IOException {
         initConfig();
-        return "";
+        DeathConfigYaml config = getConfig();
+        if (config.getPlayer().get(playerName) == null) {
+            // 如果这位玩家是null，没有进行配置
+            if (config.getGlobal().get(deathMsgID).getColor() == null) {
+                // 服主很懒，没有全局配置
+                return ""; // 返回默认颜色，无色
+            } else {
+                // 腐竹非常滴勤劳，配置了
+                return config.getGlobal().get(deathMsgID).getColor();
+            }
+        } else {
+            // 玩家进行了配置，进行第二层判断，是否有配置该key
+            if (config.getPlayer().get(playerName).get(deathMsgID) == null) {
+                // 玩家没有进行该死亡信息的配置
+                return ""; // 我爱默认
+            } else {
+                // 玩家对此信息进行了配置
+                return config.getPlayer().get(playerName).get(deathMsgID).getColor();
+            }
+        }
     }
 
     private static DeathConfigYaml getConfig() throws IOException {
