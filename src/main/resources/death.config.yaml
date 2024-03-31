@@ -1,5 +1,5 @@
-# default 字段用于存储对未特殊注明玩家对默认死亡信息
-default:
+# global 字段用于存储对未特殊注明玩家对默认死亡信息 (不用default是因为java关键字）
+global:
   # 允许使用变量 杀手: ${killer} 死者: ${departed} 武器: ${weapon}
   # key名请参考 https://zh.minecraft.wiki/w/%E6%AD%BB%E4%BA%A1%E6%B6%88%E6%81%AF [minecraft.wiki死亡消息]
   death.attack.player:

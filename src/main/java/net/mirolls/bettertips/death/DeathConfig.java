@@ -1,9 +1,10 @@
 package net.mirolls.bettertips.death;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static net.mirolls.bettertips.BetterTips.LOGGER;
 
@@ -54,11 +55,27 @@ public class DeathConfig {
         return configFile.exists(); // 有文件返回true, 没文件返回false
     }
 
+    public static void initConfig() {
+        if (!isConfigFileHere()) {
+            // 如果没有则创建，反正保证的就是一个有文件
+            createConfig();
+        }
+    }
+
     public static String getMsg(String playerName, String deathMsgID) {
+        initConfig();
+        return "";
 
     }
 
     public static String getColor(String playerName, String deathMsgID) {
+        initConfig();
+        return "";
+    }
 
+    private static DeathConfigYaml getConfig() throws IOException {
+        Yaml yaml = new Yaml();
+        InputStream inputStream = Files.newInputStream(Paths.get("bettertips/death.config.yaml"));
+        return yaml.load(inputStream);
     }
 }
