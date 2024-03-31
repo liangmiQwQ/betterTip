@@ -6,6 +6,15 @@ public class MessageInfo {
     private String killerName; // 杀手
     private String killItem; // 凶器
 
+    public MessageInfo(String deathID, String deceasedName, String killerName, String killItem) {
+        this.deathID = deathID;
+        this.deceasedName = deceasedName;
+        this.killerName = killerName;
+        this.killItem = killItem;
+    }
+
+    public MessageInfo() {
+    }
 
     public String getDeathID() {
         return deathID;

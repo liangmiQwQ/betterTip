@@ -1,6 +1,7 @@
 package net.mirolls.bettertips.mixin;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.text.Text;
@@ -21,4 +22,7 @@ public interface BetterTipsDeathAccessor {
 
     @Invoker("getDisplayName")
     Text getDisplayName(@Nullable Entity entity);
+
+    @Accessor("entity")
+    LivingEntity getEntity();
 }
