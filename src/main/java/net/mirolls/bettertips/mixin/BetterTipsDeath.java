@@ -6,6 +6,8 @@ import net.minecraft.entity.damage.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.text.Text;
+import net.mirolls.bettertips.color.MinecraftColor;
+import net.mirolls.bettertips.death.DeathConfig;
 import net.mirolls.bettertips.death.message.MessageInfo;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static net.mirolls.bettertips.BetterTips.LOGGER;
@@ -50,6 +53,20 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
 
 
         // 结下来，是最喜欢的颜色～
+        try {
+            String template = DeathConfig.getMsg(messageInfo.getDeceasedName(), messageInfo.getDeathID());
+            // 理论上template会给你一个 ${playerName}至少是计算机可读的东西
+            String color = DeathConfig.getColor(messageInfo.getDeceasedName(), messageInfo.getDeathID());
+            String fullMessage = template.replace("${departed}", messageInfo.getDeceasedName())
+                    .replace("${departed}", messageInfo.getKillerName())
+                    .replace("${weapon}", messageInfo.getKillItem()); // 死者
+
+            // 一切大功高程
+            cir.setReturnValue(MinecraftColor.getMinecraftTextWithColor(fullMessage, color));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Unique
