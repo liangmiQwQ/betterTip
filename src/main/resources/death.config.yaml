@@ -9,6 +9,7 @@ global:
     color: "colorful" # 这里的colorful是随机颜色
     message: "有一个叫做${departed}的蠢材被${killer}用${weapon}暗杀"
 
+# 玩家配置部分
 player:
   liangmimi:
     death.attack.lava:

@@ -6,6 +6,13 @@ public class DeathConfigYaml {
     private Map<String, DeathMessage> global;
     private Map<String, Map<String, DeathMessage>> player;
 
+    @Override
+    public String toString() {
+        return "DeathConfigYaml{" +
+                "global=" + global +
+                ", player=" + player +
+                '}';
+    }
 
     public Map<String, DeathMessage> getGlobal() {
         return global;

@@ -66,6 +66,7 @@ public class DeathConfig {
     public static String getMsg(String playerName, String deathMsgID) throws IOException {
         initConfig(); // 初始化配置，这里假设这个方法加载或者刷新了配置
         DeathConfigYaml config = getConfig(); // 获取配置实例，这里假设这个方法返回配置的当前状态
+        LOGGER.info(config.toString());//进行排查
 
         // 首先检查是否有针对特定玩家的配置
         if (config.getPlayer().get(playerName) == null) {
