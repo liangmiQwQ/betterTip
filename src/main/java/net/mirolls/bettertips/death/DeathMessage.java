@@ -14,6 +14,15 @@ public class DeathMessage {
         this.message = message;
     }
 
+    @Override
+    public String toString() {
+        return "DeathMessage{" +
+                "color='" + color + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+        // [20:27:23] [Server thread/INFO]: {color=colorful, message=有一个叫做${departed}的蠢材被岩浆烫死了}
+    }
+
     public String getColor() {
         return color;
     }

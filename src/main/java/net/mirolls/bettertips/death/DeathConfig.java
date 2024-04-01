@@ -76,14 +76,25 @@ public class DeathConfig {
                 return config.getGlobal().get(deathMsgID).getMessage();
             }
         } else {
+            // 今天我和bug必定得死一个
+            LOGGER.info(String.valueOf(config.getPlayer()));
+            LOGGER.info(String.valueOf(config.getPlayer().get(playerName)));
+            LOGGER.info(String.valueOf(config.getPlayer().get(playerName).get(deathMsgID))); // 输出成功
+//            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).get("message")); // 因为其返回hashMap，所以进行舱室
+            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).getClass().getName()); // 依旧报错
+            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).getMessage()); // 报错
+
+            DeathMessage playerConfig = config.getPlayer().get(playerName).get(deathMsgID);
             // 玩家进行了配置，进行第二层判断，是否有配置该key
-            if (config.getPlayer().get(playerName).get(deathMsgID) == null) {
+            if (playerConfig == null) {
                 // 玩家没有进行该死亡信息的配置
                 return Text.translatable(deathMsgID).getString(); //这才是真的默认消息
 
             } else {
                 // 玩家对此信息进行了配置
-                return config.getPlayer().get(playerName).get(deathMsgID).getMessage();
+//                return config.getPlayer().get(playerName).get(deathMsgID).getMessage();
+                LOGGER.info(String.valueOf(playerConfig));
+                return "0";
             }
         }
 
