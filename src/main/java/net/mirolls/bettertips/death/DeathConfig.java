@@ -78,13 +78,15 @@ public class DeathConfig {
                 return config.getGlobal().get(deathMsgID).getMessage();
             }
         } else {
+            /*
             // 今天我和bug必定得死一个
             LOGGER.info(String.valueOf(config.getPlayer()));
             LOGGER.info(String.valueOf(config.getPlayer().get(playerName)));
             LOGGER.info(String.valueOf(config.getPlayer().get(playerName).get(deathMsgID))); // 输出成功
-//            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).get("message")); // 因为其返回hashMap，所以进行舱室
-            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).getClass().getName()); // 依旧报错
-            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).getMessage()); // 报错
+            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).getClass().getName()); // 换jackSon之后不报错了
+            LOGGER.info(config.getPlayer().get(playerName).get(deathMsgID).getMessage()); // 也没报错
+            // 由snakeYaml引发的bug算是解决了
+            */
 
             DeathMessage playerConfig = config.getPlayer().get(playerName).get(deathMsgID);
             // 玩家进行了配置，进行第二层判断，是否有配置该key
@@ -94,9 +96,7 @@ public class DeathConfig {
 
             } else {
                 // 玩家对此信息进行了配置
-//                return config.getPlayer().get(playerName).get(deathMsgID).getMessage();
-                LOGGER.info(String.valueOf(playerConfig));
-                return "0";
+                return config.getPlayer().get(playerName).get(deathMsgID).getMessage();
             }
         }
 

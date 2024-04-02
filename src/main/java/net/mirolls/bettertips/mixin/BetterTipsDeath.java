@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.io.IOException;
 import java.util.Objects;
 
+import static net.mirolls.bettertips.BetterTips.LOGGER;
+
 
 @Mixin(DamageTracker.class)
 public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
@@ -53,14 +55,21 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             String template = DeathConfig.getMsg(messageInfo.getDeceasedName(), messageInfo.getDeathID());
             // 理论上template会给你一个 ${playerName}至少是计算机可读的东西
             String color = DeathConfig.getColor(messageInfo.getDeceasedName(), messageInfo.getDeathID());
-            String fullMessage = template.replace("${departed}", messageInfo.getDeceasedName())
-                    .replace("${departed}", messageInfo.getKillerName())
-                    .replace("${weapon}", messageInfo.getKillItem()); // 死者
 
-            // 一切大功高程
-            cir.setReturnValue(MinecraftColor.getMinecraftTextWithColor(fullMessage, color));
+            // To fix: Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.CharSequence.toString()" because "replacement" is null
+            String killerName = messageInfo.getKillerName() != null ? messageInfo.getKillerName() : "";
+            String killItem = messageInfo.getKillItem() != null ? messageInfo.getKillItem() : "";
+
+            String fullMessage = template.replace("${departed}", messageInfo.getDeceasedName())
+                    .replace("${departed}", killerName)
+                    .replace("${weapon}", killItem);
+
+            Text finalMessage = MinecraftColor.getMinecraftTextWithColor(fullMessage, color);
+
+            cir.setReturnValue(finalMessage);
 
         } catch (IOException e) {
+            LOGGER.error("[BetterTips] Something Error");
             throw new RuntimeException(e);
         }
     }
