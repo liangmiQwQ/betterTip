@@ -1,11 +1,13 @@
 package net.mirolls.bettertips.death;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.minecraft.text.Text;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static net.mirolls.bettertips.BetterTips.LOGGER;
 
@@ -125,10 +127,13 @@ public class DeathConfig {
     }
 
     private static DeathConfigYaml getConfig() throws IOException {
-        Yaml yaml = new Yaml();
-        InputStream inputStream = Files.newInputStream(Paths.get("bettertips/death.config.yaml"));
-//        return yaml.load(inputStream);
+        // 不使用SnakeYaml的原因：https://bitbucket.org/snakeyaml/snakeyaml/issues/1078/
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.findAndRegisterModules(); // 查找库一类的玩意
+        File configYaml = new File("bettertips/death.config.yaml");
+
+        // InputStream inputStream = Files.newInputStream(Paths.get("bettertips/death.config.yaml"));
         // To fix Caused by: java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class net.mirolls.bettertips.death.DeathConfigYaml (java.util.LinkedHashMap is in module java.base of loader 'bootstrap'; net.mirolls.bettertips.death.DeathConfigYaml is in unnamed module of loader
-        return yaml.loadAs(inputStream, DeathConfigYaml.class);
+        return mapper.readValue(configYaml, DeathConfigYaml.class);
     }
 }
