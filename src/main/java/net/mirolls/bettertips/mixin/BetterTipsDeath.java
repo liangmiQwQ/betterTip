@@ -61,7 +61,7 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             String killItem = messageInfo.getKillItem() != null ? messageInfo.getKillItem() : "";
 
             String fullMessage = template.replace("${departed}", messageInfo.getDeceasedName())
-                    .replace("${departed}", killerName)
+                    .replace("${killer}", killerName)
                     .replace("${weapon}", killItem);
 
             Text finalMessage = MinecraftColor.getMinecraftTextWithColor(fullMessage, color);
