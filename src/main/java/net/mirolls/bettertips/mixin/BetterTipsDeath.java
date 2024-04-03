@@ -141,11 +141,9 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             Text text = attacker == null ? source.getDisplayName() : attacker.getDisplayName();
             if (attacker instanceof LivingEntity livingEntity) {
                 // 是生物实体
-                LOGGER.info("攻击者是生物实体");
                 itemStack = livingEntity.getMainHandStack();
             } else {
                 // 不是生物实体
-                LOGGER.info("攻击者不是生物实体啊啊啊");
                 itemStack = ItemStack.EMPTY;
             }
             if (!itemStack.isEmpty() && itemStack.hasCustomName()) {
@@ -159,7 +157,6 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
         String deceased = string + ".player";
         // 我这边添加一个条件，如果livingEntity2是player，并且endWith不是player
         if (livingEntity2 != null && livingEntity2.isPlayer() && !string.endsWith("player")) {
-            LOGGER.info("添加了.player后缀");
             // 不是null，是玩家，并且结尾不是玩家
             return new MessageInfo(deceased, Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(livingEntity2.getDisplayName()).getString(), null);
         }
