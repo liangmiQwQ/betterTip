@@ -159,6 +159,9 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
         if (livingEntity2 != null && livingEntity2.isPlayer() && !string.endsWith("player")) {
             // 不是null，是玩家，并且结尾不是玩家
             return new MessageInfo(deceased, Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(livingEntity2.getDisplayName()).getString(), null);
+            // 使用该表达式仍然是有bug，可能会出现是.mob结尾，然后killerName = null
+        } else if (livingEntity2 != null) {// 有主要对手，返回string，并且返回击杀者
+            return new MessageInfo(string, Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(livingEntity2.getDisplayName()).getString(), null);
         }
         // 否则用正常的
         return new MessageInfo(string, Objects.requireNonNull(killed.getDisplayName()).getString(), null, null);

@@ -10,6 +10,8 @@ import java.awt.*;
 import java.util.Objects;
 import java.util.Random;
 
+import static net.mirolls.bettertips.BetterTips.LOGGER;
+
 public class MinecraftColor {
     private static final Random random = new Random();
 
@@ -32,6 +34,7 @@ public class MinecraftColor {
                 // 和createColorfulText差不多的
                 MutableText resultText = Text.empty(); // 创建一个空的MutableText作为起始点
                 for (char c : text.toCharArray()) {
+                    LOGGER.info(generateBrightColor());
                     TextColor colorHex = TextColor.fromRgb(hexToRgb(generateBrightColor())); // 创建一个颜色
                     // 为每个字符创建一个MutableText，并设置随机颜色
                     MutableText charText = Text.literal(String.valueOf(c))
