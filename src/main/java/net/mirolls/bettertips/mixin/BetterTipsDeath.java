@@ -60,6 +60,8 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             String killerName = messageInfo.getKillerName() != null ? messageInfo.getKillerName() : "";
             String killItem = messageInfo.getKillItem() != null ? messageInfo.getKillItem() : "";
 
+            LOGGER.info("[BetterTips]Someone died, death id: " + messageInfo.getDeathID());
+
             String fullMessage = template.replace("${departed}", messageInfo.getDeceasedName())
                     .replace("${killer}", killerName)
                     .replace("${weapon}", killItem);
@@ -134,11 +136,16 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
 
         String string = "death.attack." + damageSource.getType().msgId();
         if (attacker != null || source != null) {
+            LOGGER.info("有攻击者！");
             ItemStack itemStack;
             Text text = attacker == null ? source.getDisplayName() : attacker.getDisplayName();
             if (attacker instanceof LivingEntity livingEntity) {
+                // 是生物实体
+                LOGGER.info("攻击者是生物实体");
                 itemStack = livingEntity.getMainHandStack();
             } else {
+                // 不是生物实体
+                LOGGER.info("攻击者不是生物实体啊啊啊");
                 itemStack = ItemStack.EMPTY;
             }
             if (!itemStack.isEmpty() && itemStack.hasCustomName()) {
@@ -146,12 +153,17 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             }
         }
         LivingEntity livingEntity2 = killed.getPrimeAdversary();
+        // 有一个bug，如果被怪物手持物品杀死会得到一个奇怪的消息death.attack.mob.player
         // Mojang在他的源代码是这样写的 String string2 = string + ".player";
         // Mojang变量命名生草无比
         String deceased = string + ".player";
-        if (livingEntity2 != null) {
+        // 我这边添加一个条件，如果livingEntity2是player，并且endWith不是player
+        if (livingEntity2 != null && livingEntity2.isPlayer() && !string.endsWith("player")) {
+            LOGGER.info("添加了.player后缀");
+            // 不是null，是玩家，并且结尾不是玩家
             return new MessageInfo(deceased, Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(livingEntity2.getDisplayName()).getString(), null);
         }
+        // 否则用正常的
         return new MessageInfo(string, Objects.requireNonNull(killed.getDisplayName()).getString(), null, null);
 
     }
