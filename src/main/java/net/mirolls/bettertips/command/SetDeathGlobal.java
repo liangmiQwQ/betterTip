@@ -29,9 +29,10 @@ public class SetDeathGlobal {
                                 .then(argument("deathID", StringArgumentType.string()) // 理论上来说，ID是String类型的
                                         .then(argument("message", StringArgumentType.greedyString())
                                                 .executes(SetDeathGlobal::setMessageHandle))))
-                        .then(literal("message").then(argument("deathID", StringArgumentType.string())
-                                .then(argument("color", StringArgumentType.greedyString())
-                                        .executes(SetDeathGlobal::setColorHandle))))) // 一样的
+                        .then(literal("color")
+                                .then(argument("deathID", StringArgumentType.string())
+                                        .then(argument("color", StringArgumentType.greedyString())
+                                                .executes(SetDeathGlobal::setColorHandle))))) // 一样的
                 .then(literal("query")
                         .executes(context -> {
                             return 1;
