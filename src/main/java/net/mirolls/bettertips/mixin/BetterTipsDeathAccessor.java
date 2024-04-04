@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageTracker;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,4 +26,7 @@ public interface BetterTipsDeathAccessor {
 
     @Accessor("entity")
     LivingEntity getEntity();
+
+    @Accessor("INTENTIONAL_GAME_DESIGN_ISSUE_LINK_STYLE")
+    Style getINTENTIONAL_GAME_DESIGN_ISSUE_LINK_STYLE();
 }

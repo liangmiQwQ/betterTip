@@ -6,6 +6,7 @@ import net.minecraft.entity.damage.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.text.Text;
+import net.minecraft.text.Texts;
 import net.mirolls.bettertips.color.MinecraftColor;
 import net.mirolls.bettertips.death.DeathConfig;
 import net.mirolls.bettertips.death.message.MessageInfo;
@@ -82,8 +83,12 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             String departed = messageInfo.getDeceasedName();
 
             String fullMessage;
-            if (Objects.equals(template, "%[Normal]")) {
-                fullMessage = Text.translatable(messageInfo.getDeathID(), filterNonNullArgs(departed, killerName, killItem)).getString();
+            if (Objects.equals(template, "%[Normal]")) { // 增加一个判断，如果死于death.attack.badRespawnPoint.message，进行特别的处理
+                if (Objects.equals(messageInfo.getDeathID(), "death.attack.badRespawnPoint.message")) {
+                    fullMessage = Texts.bracketed(Text.translatable("death.attack.badRespawnPoint.link")).getString();
+                } else {
+                    fullMessage = Text.translatable(messageInfo.getDeathID(), filterNonNullArgs(departed, killerName, killItem)).getString();
+                }
             } else {
                 fullMessage = template.replace("${departed}", departed)
                         .replace("${killer}", killerName)
