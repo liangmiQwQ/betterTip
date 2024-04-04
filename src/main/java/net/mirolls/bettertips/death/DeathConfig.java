@@ -2,6 +2,7 @@ package net.mirolls.bettertips.death;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import net.minecraft.text.Text;
 
 import java.io.BufferedWriter;
@@ -161,7 +162,7 @@ public class DeathConfig {
     }
 
     public static ObjectMapper getConfigMapper() throws IOException {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
         mapper.findAndRegisterModules();
         return mapper;
     }

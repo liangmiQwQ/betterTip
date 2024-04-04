@@ -42,7 +42,6 @@ public class SetDeathGlobal {
 
         // 先进行一个校验，防止整个配置文件崩坏
         if (isValidDeathYamlKey(deathID)) {
-            context.getSource().sendFeedback(() -> Text.literal("set模式"), false);
             try {
                 final String CONFIG_FILE_PATH = "bettertips/death.config.yaml";
                 ObjectMapper mapper = DeathConfig.getConfigMapper();
@@ -54,9 +53,11 @@ public class SetDeathGlobal {
 
                 mapper.writeValue(configYaml, config);
                 // 写入注释
-                writeComments(comments, CONFIG_FILE_PATH);
+                writeComments(comments + "\n", CONFIG_FILE_PATH);
 
+                context.getSource().sendFeedback(() -> Text.literal("写入成功"), false);
             } catch (IOException e) {
+                context.getSource().sendFeedback(() -> Text.translatable("command.failed"), false);
                 LOGGER.error("[BetterTips]: Cannot get the death config");
                 return 0;
             }
