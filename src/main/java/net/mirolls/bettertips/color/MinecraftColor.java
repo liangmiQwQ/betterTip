@@ -10,8 +10,6 @@ import java.awt.*;
 import java.util.Objects;
 import java.util.Random;
 
-import static net.mirolls.bettertips.BetterTips.LOGGER;
-
 public class MinecraftColor {
     private static final Random random = new Random();
 
@@ -33,24 +31,49 @@ public class MinecraftColor {
             } else if (Objects.equals(color, "light_colorful")) {
                 // 和createColorfulText差不多的
                 MutableText resultText = Text.empty(); // 创建一个空的MutableText作为起始点
-                for (char c : text.toCharArray()) {
-                    LOGGER.info(generateBrightColor());
-                    TextColor colorHex = TextColor.fromRgb(hexToRgb(generateBrightColor())); // 创建一个颜色
+                for (char c : basicText.getString().toCharArray()) {
+                    String RandomLightColor = generateBrightColor();
+                    TextColor colorHex = TextColor.fromRgb(hexToRgb(RandomLightColor)); // 创建一个颜色
                     // 为每个字符创建一个MutableText，并设置随机颜色
                     MutableText charText = Text.literal(String.valueOf(c))
                             .setStyle(Style.EMPTY.withColor(colorHex)); // 和加载hex颜色的差不多
                     resultText.append(charText); // 将字符文本附加到结果文本上
                 }
+                basicText = resultText; // 令basic等同添加完毕的
             } else if (Objects.equals(color, "dark_colorful")) {
                 // 和createColorfulText差不多的
                 MutableText resultText = Text.empty(); // 创建一个空的MutableText作为起始点
-                for (char c : text.toCharArray()) {
+                for (char c : basicText.getString().toCharArray()) {
                     TextColor colorHex = TextColor.fromRgb(hexToRgb(generateDarkColor())); // 创建一个颜色
                     // 为每个字符创建一个MutableText，并设置随机颜色
                     MutableText charText = Text.literal(String.valueOf(c))
                             .setStyle(Style.EMPTY.withColor(colorHex)); // 和加载hex颜色的差不多
                     resultText.append(charText); // 将字符文本附加到结果文本上
                 }
+                basicText = resultText;
+            } else if (Objects.equals(color, "very_light_colorful")) {
+                // 和createColorfulText差不多的
+                MutableText resultText = Text.empty(); // 创建一个空的MutableText作为起始点
+                for (char c : basicText.getString().toCharArray()) {
+                    String RandomLightColor = generateVeryBrightColor();
+                    TextColor colorHex = TextColor.fromRgb(hexToRgb(RandomLightColor)); // 创建一个颜色
+                    // 为每个字符创建一个MutableText，并设置随机颜色
+                    MutableText charText = Text.literal(String.valueOf(c))
+                            .setStyle(Style.EMPTY.withColor(colorHex)); // 和加载hex颜色的差不多
+                    resultText.append(charText); // 将字符文本附加到结果文本上
+                }
+                basicText = resultText; // 令basic等同添加完毕的
+            } else if (Objects.equals(color, "very_dark_colorful")) {
+                // 和createColorfulText差不多的
+                MutableText resultText = Text.empty(); // 创建一个空的MutableText作为起始点
+                for (char c : basicText.getString().toCharArray()) {
+                    TextColor colorHex = TextColor.fromRgb(hexToRgb(generateVeryDarkColor())); // 创建一个颜色
+                    // 为每个字符创建一个MutableText，并设置随机颜色
+                    MutableText charText = Text.literal(String.valueOf(c))
+                            .setStyle(Style.EMPTY.withColor(colorHex)); // 和加载hex颜色的差不多
+                    resultText.append(charText); // 将字符文本附加到结果文本上
+                }
+                basicText = resultText;
             } else if (color.startsWith("#")) {
                 TextColor colorHex = TextColor.fromRgb(hexToRgb(color));
                 // 如果颜色有效，则应用该颜色
@@ -91,7 +114,7 @@ public class MinecraftColor {
         } while (calculateBrightness(r, g, b) < 180);
 
         // 转换为hex格式
-        return String.format("#%02x%02x%02x", r, g, b);
+        return String.format("#%02x%02x%02x", r, g, b).toUpperCase();
     }
 
     // 生成随机暗颜色
@@ -102,7 +125,37 @@ public class MinecraftColor {
         int b = random.nextInt(256);
 
         // 转换为hex格式
-        return String.format("#%02x%02x%02x", r, g, b);
+        return String.format("#%02x%02x%02x", r, g, b).toUpperCase();
+    }
+
+    public static String generateVeryBrightColor() {
+        Random random = new Random();
+        int r, g, b;
+
+        // 生成RGB颜色值，确保亮度达到较高阈值
+        do {
+            r = random.nextInt(256);
+            g = random.nextInt(256);
+            b = random.nextInt(256);
+        } while (calculateBrightness(r, g, b) < 220); // 可以调整亮度的阈值
+
+        // 转换为hex格式
+        return String.format("#%02x%02x%02x", r, g, b).toUpperCase();
+    }
+
+    public static String generateVeryDarkColor() {
+        Random random = new Random();
+        int r, g, b;
+
+        // 生成RGB颜色值，确保亮度达到较低阈值
+        do {
+            r = random.nextInt(256);
+            g = random.nextInt(256);
+            b = random.nextInt(256);
+        } while (calculateBrightness(r, g, b) > 50); // 可以调整亮度的阈值
+
+        // 转换为hex格式
+        return String.format("#%02x%02x%02x", r, g, b).toUpperCase();
     }
 
     // 计算颜色的亮度
