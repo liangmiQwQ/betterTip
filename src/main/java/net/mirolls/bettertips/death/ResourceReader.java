@@ -24,7 +24,7 @@ public class ResourceReader {
                 return reader.lines().collect(Collectors.joining("\n"));
             }
         } catch (Exception e) {
-            LOGGER.info(String.valueOf(e));
+            LOGGER.error(String.valueOf(e));
             return null;
         }
     }

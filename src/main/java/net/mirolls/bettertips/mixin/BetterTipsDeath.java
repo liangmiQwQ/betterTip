@@ -60,8 +60,6 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             String killerName = messageInfo.getKillerName() != null ? messageInfo.getKillerName() : "";
             String killItem = messageInfo.getKillItem() != null ? messageInfo.getKillItem() : "";
 
-            LOGGER.info("[BetterTips]Someone died, death id: " + messageInfo.getDeathID());
-
             String fullMessage = template.replace("${departed}", messageInfo.getDeceasedName())
                     .replace("${killer}", killerName)
                     .replace("${weapon}", killItem);
@@ -136,7 +134,6 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
 
         String string = "death.attack." + damageSource.getType().msgId();
         if (attacker != null || source != null) {
-            LOGGER.info("有攻击者！");
             ItemStack itemStack;
             Text text = attacker == null ? source.getDisplayName() : attacker.getDisplayName();
             if (attacker instanceof LivingEntity livingEntity) {

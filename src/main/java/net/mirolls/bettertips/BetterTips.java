@@ -13,5 +13,6 @@ public class BetterTips implements ModInitializer {
         LOGGER.info("[BetterTips] BetterTips mod is loading");
         // init config file
         DeathConfig.initConfig();
+        // load commands
     }
 }
