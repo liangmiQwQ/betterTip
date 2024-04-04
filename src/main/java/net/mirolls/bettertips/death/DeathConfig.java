@@ -3,7 +3,6 @@ package net.mirolls.bettertips.death;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import net.minecraft.text.Text;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -67,6 +66,8 @@ public class DeathConfig {
     }
 
     public static String getMsg(String playerName, String deathMsgID) throws IOException {
+        String normalMessage = "%[Normal]";
+
         initConfig();
         DeathConfigYaml config = getConfig();
         if (config.getPlayer().get(playerName) == null) {
@@ -75,13 +76,13 @@ public class DeathConfig {
             if (config.getGlobal().get(deathMsgID) != null) {
                 if (config.getGlobal().get(deathMsgID).getMessage() == null) {
                     // 那可能是空项，或者只配置了颜色
-                    return Text.translatable(deathMsgID).getString(); //这才是真的默认消息
+                    return normalMessage; // 不实用Text.translate的原因是防止出现%1$s这种东西
                 } else {
                     // 腐竹非常滴勤劳，配置了
                     return config.getGlobal().get(deathMsgID).getMessage();
                 }
             } else {
-                return Text.translatable(deathMsgID).getString(); //这才是真的默认消息
+                return normalMessage; //这才是真的默认消息
             }
 
         } else {
@@ -95,13 +96,13 @@ public class DeathConfig {
                 if (config.getGlobal().get(deathMsgID) != null) { // 这个项直接就不存在了
                     if (config.getGlobal().get(deathMsgID).getMessage() == null) {
                         // 那可能是空项，或者只配置了颜色
-                        return Text.translatable(deathMsgID).getString(); //这才是真的默认消息
+                        return normalMessage; //这才是真的默认消息
                     } else {
                         // 腐竹非常滴勤劳，配置了
                         return config.getGlobal().get(deathMsgID).getMessage();
                     }
                 } else {
-                    return Text.translatable(deathMsgID).getString(); //这才是真的默认消息
+                    return normalMessage; //这才是真的默认消息
                 }
             } else {
                 // 玩家对此信息进行了配置

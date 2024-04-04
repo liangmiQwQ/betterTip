@@ -24,6 +24,26 @@ import static net.mirolls.bettertips.BetterTips.LOGGER;
 
 @Mixin(DamageTracker.class)
 public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
+
+
+    @Unique
+    private static Object[] filterNonNullArgs(Object... args) {
+        int nonNullCount = 0;
+        for (Object arg : args) {
+            if (arg != null) {
+                nonNullCount++;
+            }
+        }
+        Object[] nonNullArgs = new Object[nonNullCount];
+        int index = 0;
+        for (Object arg : args) {
+            if (arg != null) {
+                nonNullArgs[index++] = arg;
+            }
+        }
+        return nonNullArgs;
+    }
+
     @Inject(method = "getDeathMessage", at = @At("RETURN"), cancellable = true)
     private void getDeathMessage(CallbackInfoReturnable<Text> cir) {
         MessageInfo messageInfo;
@@ -54,17 +74,24 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
         try {
             String template = DeathConfig.getMsg(messageInfo.getDeceasedName(), messageInfo.getDeathID());
             // 理论上template会给你一个 ${playerName}至少是计算机可读的东西
+            // 但是现在理论被打破了
             String color = DeathConfig.getColor(messageInfo.getDeceasedName(), messageInfo.getDeathID());
-
             // To fix: Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.CharSequence.toString()" because "replacement" is null
             String killerName = messageInfo.getKillerName() != null ? messageInfo.getKillerName() : "";
             String killItem = messageInfo.getKillItem() != null ? messageInfo.getKillItem() : "";
+            String departed = messageInfo.getDeceasedName();
 
-            String fullMessage = template.replace("${departed}", messageInfo.getDeceasedName())
-                    .replace("${killer}", killerName)
-                    .replace("${weapon}", killItem);
+            String fullMessage;
+            if (Objects.equals(template, "%[Normal]")) {
+                fullMessage = Text.translatable(messageInfo.getDeathID(), filterNonNullArgs(departed, killerName, killItem)).getString();
+            } else {
+                fullMessage = template.replace("${departed}", departed)
+                        .replace("${killer}", killerName)
+                        .replace("${weapon}", killItem);
+            }
 
             Text finalMessage = MinecraftColor.getMinecraftTextWithColor(fullMessage, color);
+
 
             cir.setReturnValue(finalMessage);
 
