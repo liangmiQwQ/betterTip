@@ -1,21 +1,25 @@
 # global 字段用于存储对未特殊注明玩家对默认死亡信息 (不用default是因为java关键字）
+# player 字段指的是玩家配置部分
+# 允许使用变量 杀手: ${killer} 死者: ${departed} 武器: ${weapon}
+# 死亡ID名请参考 https://zh.minecraft.wiki/w/%E6%AD%BB%E4%BA%A1%E6%B6%88%E6%81%AF [minecraft.wiki死亡消息]
+# 颜色可参考 https://zh.minecraft.wiki/w/%E6%A0%BC%E5%BC%8F%E5%8C%96%E4%BB%A3%E7%A0%81 [minecraft.wiki 格式化代码]
+# (进行了一些测试，似乎minecoin_gold以后的颜色好像不行,原因为止)
+# colorful 作为颜色指的是随机颜色
+# 允许dark_colorful或者light_colorful，并且可以very_dark_colorful和very_light_colorful，可以制作更加炫酷的死亡消息
+# 如果想要进行更好的自定义颜色可以复制转义字符,理论上§k这些转义字符也可以
+
 global:
-  # 允许使用变量 杀手: ${killer} 死者: ${departed} 武器: ${weapon}
-  # key名请参考 https://zh.minecraft.wiki/w/%E6%AD%BB%E4%BA%A1%E6%B6%88%E6%81%AF [minecraft.wiki死亡消息]
-  # 颜色可参考 https://zh.minecraft.wiki/w/%E6%A0%BC%E5%BC%8F%E5%8C%96%E4%BB%A3%E7%A0%81 [minecraft.wiki 格式化代码]
-  # (进行了一些测试，似乎minecoin_gold以后的颜色好像不行,原因为止)
-  # 如果想要进行更好的自定义颜色可以复制转义字符,理论上§k这些转义字符也可以
   death.attack.player:
-    color: "red" # 可以使用minecraft的各种允许颜色
+    color: "red"
     message: "有一个叫做${departed}的蠢材被${killer}暗杀"
   death.attack.player.item:
-    color: "colorful" # 这里的colorful是随机颜色
+    color: "colorful"
     message: "有一个叫做${departed}的蠢材被${killer}用${weapon}暗杀"
   death.attack.mob:
-    color: "dark_colorful" # 允许dark_colorful或者light_colorful，可以制作更加炫酷的死亡消息
+    color: "dark_colorful"
     message: "有一个叫做${departed}的蠢材被${killer}暗杀"
 
-# 玩家配置部分
+
 player:
   liangmimi:
     death.attack.lava:
