@@ -3,7 +3,7 @@
 # 允许使用变量 杀手: ${killer} 死者: ${departed} 武器: ${weapon}
 # 死亡ID名请参考 https://zh.minecraft.wiki/w/%E6%AD%BB%E4%BA%A1%E6%B6%88%E6%81%AF [minecraft.wiki死亡消息]
 # 颜色可参考 https://zh.minecraft.wiki/w/%E6%A0%BC%E5%BC%8F%E5%8C%96%E4%BB%A3%E7%A0%81 [minecraft.wiki 格式化代码]
-# (进行了一些测试，似乎minecoin_gold以后的颜色好像不行,原因为止)
+# (进行了一些测试，似乎minecoin_gold以后的颜色好像不行,原因未知)
 # colorful 作为颜色指的是随机颜色
 # 允许dark_colorful或者light_colorful，并且可以very_dark_colorful和very_light_colorful，可以制作更加炫酷的死亡消息
 # 如果想要进行更好的自定义颜色可以复制转义字符,理论上§k这些转义字符也可以
