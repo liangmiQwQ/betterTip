@@ -28,7 +28,10 @@ public class SetDeathGlobal {
                         .then(literal("message")
                                 .then(argument("deathID", StringArgumentType.string()) // 理论上来说，ID是String类型的
                                         .then(argument("message", StringArgumentType.greedyString())
-                                                .executes(SetDeathGlobal::commandSetHandle))))) // 为了缩进美观
+                                                .executes(SetDeathGlobal::setMessageHandle))))
+                        .then(literal("message").then(argument("deathID", StringArgumentType.string())
+                                .then(argument("color", StringArgumentType.greedyString())
+                                        .executes(SetDeathGlobal::setColorHandle))))) // 一样的
                 .then(literal("query")
                         .executes(context -> {
                             return 1;
@@ -36,7 +39,7 @@ public class SetDeathGlobal {
     }
 
     // 创建这个方法的目的是缩进太难受了要爆炸了
-    private static int commandSetHandle(CommandContext<ServerCommandSource> context) {
+    private static int setMessageHandle(CommandContext<ServerCommandSource> context) {
         String deathID = StringArgumentType.getString(context, "deathID");
         String message = StringArgumentType.getString(context, "message");
 
@@ -55,7 +58,7 @@ public class SetDeathGlobal {
                 // 写入注释
                 writeComments(comments + "\n", CONFIG_FILE_PATH);
 
-                context.getSource().sendFeedback(() -> Text.literal("写入成功"), false);
+                context.getSource().sendFeedback(() -> Text.literal("写入" + deathID + "消息成功"), false);
             } catch (IOException e) {
                 context.getSource().sendFeedback(() -> Text.translatable("command.failed"), false);
                 LOGGER.error("[BetterTips]: Cannot get the death config");
@@ -67,6 +70,39 @@ public class SetDeathGlobal {
             return 0;
         }
     }
+
+    private static int setColorHandle(CommandContext<ServerCommandSource> context) {
+        String deathID = StringArgumentType.getString(context, "deathID");
+        String color = StringArgumentType.getString(context, "color");
+
+        // 先进行一个校验，防止整个配置文件崩坏
+        if (isValidDeathYamlKey(deathID)) {
+            try {
+                final String CONFIG_FILE_PATH = "bettertips/death.config.yaml";
+                ObjectMapper mapper = DeathConfig.getConfigMapper();
+                File configYaml = new File(CONFIG_FILE_PATH);
+                String comments = readComments(CONFIG_FILE_PATH);
+                DeathConfigYaml config = mapper.readValue(configYaml, DeathConfigYaml.class);
+
+                config = updateGlobalColor(config, deathID, color);
+
+                mapper.writeValue(configYaml, config);
+                // 写入注释
+                writeComments(comments + "\n", CONFIG_FILE_PATH);
+
+                context.getSource().sendFeedback(() -> Text.literal("写入" + deathID + "颜色成功"), false);
+            } catch (IOException e) {
+                context.getSource().sendFeedback(() -> Text.translatable("command.failed"), false);
+                LOGGER.error("[BetterTips]: Cannot get the death config");
+                return 0;
+            }
+            return 1;
+        } else {
+            context.getSource().sendFeedback(() -> Text.translatable("command.unknown.argument"), false);
+            return 0;
+        }
+    }
+
 
     private static boolean isValidDeathYamlKey(String key) {
         String regex = "^(death\\.attack\\.|death\\.fell\\.)[._a-zA-Z]*$";
@@ -146,6 +182,26 @@ public class SetDeathGlobal {
             deathMessage = new DeathMessage();
         }
         deathMessage.setMessage(newMessage);
+        global.put(key, deathMessage);
+
+        return updatedConfig;
+    }
+
+    public static DeathConfigYaml updateGlobalColor(DeathConfigYaml config, String key, String newColor) {
+        DeathConfigYaml updatedConfig = new DeathConfigYaml();
+        updatedConfig.setGlobal(new HashMap<>(config.getGlobal())); // 复制原始 global map
+        updatedConfig.setPlayer(new HashMap<>(config.getPlayer())); // 复制原始 player map
+
+        Map<String, DeathMessage> global = updatedConfig.getGlobal();
+
+        DeathMessage deathMessage;
+        if (global.containsKey(key)) {
+            deathMessage = global.get(key);
+        } else {
+            // 如果 key 不存在，创建一个新的 DeathMessage 对象并添加到 global 中
+            deathMessage = new DeathMessage();
+        }
+        deathMessage.setColor(newColor);
         global.put(key, deathMessage);
 
         return updatedConfig;
