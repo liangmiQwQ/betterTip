@@ -159,4 +159,10 @@ public class DeathConfig {
         // To fix Caused by: java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class net.mirolls.bettertips.death.DeathConfigYaml (java.util.LinkedHashMap is in module java.base of loader 'bootstrap'; net.mirolls.bettertips.death.DeathConfigYaml is in unnamed module of loader
         return mapper.readValue(configYaml, DeathConfigYaml.class);
     }
+
+    public static ObjectMapper getConfigMapper() throws IOException {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.findAndRegisterModules();
+        return mapper;
+    }
 }
