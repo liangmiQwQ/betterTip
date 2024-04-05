@@ -52,7 +52,7 @@ public class SetDeathGlobal {
 
                 mapper.writeValue(configYaml, config);
                 // 写入注释
-                writeComments(comments + ], CONFIG_FILE_PATH);
+                writeComments(comments + System.lineSeparator(), CONFIG_FILE_PATH);
 
                 context.getSource().sendFeedback(() -> Text.literal("写入" + deathID + "消息成功"), false);
             } catch (IOException e) {

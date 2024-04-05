@@ -54,7 +54,7 @@ public class SetDeathPlayer {
 
                 mapper.writeValue(configYaml, config);
                 // 写入注释
-                writeComments(comments + "\n", CONFIG_FILE_PATH);
+                writeComments(comments + System.lineSeparator(), CONFIG_FILE_PATH);
 
                 context.getSource().sendFeedback(() -> Text.literal("写入" + deathID + "消息成功"), false);
             } catch (IOException e) {
@@ -88,7 +88,7 @@ public class SetDeathPlayer {
 
                 mapper.writeValue(configYaml, config);
                 // 写入注释
-                writeComments(comments + "\n", CONFIG_FILE_PATH);
+                writeComments(comments + System.lineSeparator(), CONFIG_FILE_PATH);
 
                 context.getSource().sendFeedback(() -> Text.literal("写入" + deathID + "颜色成功"), false);
             } catch (IOException e) {
@@ -123,7 +123,7 @@ public class SetDeathPlayer {
             if (line == null || line.trim().isEmpty()) {
                 break; // 如果读取到文件末尾或空行则停止
             }
-            commentsBuilder.append(line).append("\n");
+            commentsBuilder.append(line).append(System.lineSeparator());
         }
 
         reader.close();
