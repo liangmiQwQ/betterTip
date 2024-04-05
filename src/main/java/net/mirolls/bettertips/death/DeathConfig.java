@@ -105,8 +105,24 @@ public class DeathConfig {
                     return normalMessage; //这才是真的默认消息
                 }
             } else {
-                // 玩家对此信息进行了配置
-                return config.getPlayer().get(playerName).get(deathMsgID).getMessage();
+                // fix: Caused by: java.lang.NullPointerException: Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because "template" is null
+                // 增加两层判断，防止出现玩家只配置颜色没配置消息之类的情况
+                if (playerConfig.getMessage() == null) {
+                    // 默认我爱你
+                    if (config.getGlobal().get(deathMsgID) != null) { // 这个项直接就不存在了
+                        if (config.getGlobal().get(deathMsgID).getMessage() == null) {
+                            // 那可能是空项，或者只配置了颜色
+                            return normalMessage; //这才是真的默认消息
+                        } else {
+                            // 腐竹非常滴勤劳，配置了
+                            return config.getGlobal().get(deathMsgID).getMessage();
+                        }
+                    } else {
+                        return normalMessage; //这才是真的默认消息
+                    }
+                } else {
+                    return config.getPlayer().get(playerName).get(deathMsgID).getMessage();
+                }
             }
         }
 
@@ -130,7 +146,8 @@ public class DeathConfig {
             }
         } else {
             // 玩家进行了配置，进行第二层判断，是否有配置该key
-            if (config.getPlayer().get(playerName).get(deathMsgID) == null) {
+            DeathMessage playerConfig = config.getPlayer().get(playerName).get(deathMsgID);
+            if (playerConfig == null) {
                 // 玩家没有进行该死亡信息的配置
                 // 转头投靠global
                 if (config.getGlobal().get(deathMsgID) != null) {
@@ -145,8 +162,25 @@ public class DeathConfig {
                     return "";
                 }
             } else {
-                // 玩家对此信息进行了配置
-                return config.getPlayer().get(playerName).get(deathMsgID).getColor();
+                // fix: Caused by: java.lang.NullPointerException: Cannot invoke "String.replace(java.lang.CharSequence, java.lang.CharSequence)" because "template" is null
+                // 增加两层判断，防止出现玩家只配置消息没配置颜色之类的情况
+                // 虽然颜色返回null也不是不可以的啦
+                if (playerConfig.getColor() == null) {
+                    // 默认我爱你
+                    if (config.getGlobal().get(deathMsgID) != null) { // 这个项直接就不存在了
+                        if (config.getGlobal().get(deathMsgID).getColor() == null) {
+                            // 那可能是空项，或者只配置了消息
+                            return ""; //这才是真的默认颜色
+                        } else {
+                            // 腐竹非常滴勤劳，配置了
+                            return config.getGlobal().get(deathMsgID).getColor();
+                        }
+                    } else {
+                        return "";
+                    }
+                } else {
+                    return config.getPlayer().get(playerName).get(deathMsgID).getColor();
+                }
             }
         }
     }

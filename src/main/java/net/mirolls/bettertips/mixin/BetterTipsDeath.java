@@ -74,6 +74,7 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
         // 结下来，是最喜欢的颜色～
         try {
             String template = DeathConfig.getMsg(messageInfo.getDeceasedName(), messageInfo.getDeathID());
+            LOGGER.info(messageInfo.getDeceasedName(), messageInfo.getDeathID());
             // 理论上template会给你一个 ${playerName}至少是计算机可读的东西
             // 但是现在理论被打破了
             String color = DeathConfig.getColor(messageInfo.getDeceasedName(), messageInfo.getDeathID());
