@@ -11,6 +11,7 @@ import net.mirolls.bettertips.death.DeathConfigYaml;
 import net.mirolls.bettertips.death.DeathMessage;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -127,7 +128,7 @@ public class SetDeathGlobal {
     }
 
     private static int determineCommentLines(String inputFile) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), StandardCharsets.UTF_8));
         int commentLines = 0;
 
         // 根据自定义条件确定需要提取的注释行数
@@ -149,7 +150,7 @@ public class SetDeathGlobal {
     private static void writeComments(String comments, String outputFile) throws IOException {
         // 读取原有的内容
         StringBuilder contentBuilder = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new FileReader(outputFile));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(outputFile), StandardCharsets.UTF_8));
         String line;
         while ((line = reader.readLine()) != null) {
             contentBuilder.append(line).append(System.lineSeparator());
@@ -157,7 +158,7 @@ public class SetDeathGlobal {
         reader.close();
 
         // 将注释和原有内容写入文件
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8));
         writer.write(comments);
         writer.write(contentBuilder.toString());
         writer.close();

@@ -4,17 +4,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 import static net.mirolls.bettertips.BetterTips.LOGGER;
 
 
 public class DeathConfig {
     private static void createConfig() {
-        String defaultConfigContent = ResourceReader.readResourceAsString("death.config.yaml");
+        String defaultConfigContent;
+        if (System.lineSeparator().equals("\r\n")) {
+            defaultConfigContent = ResourceReader.readResourceAsString("death.config.yaml.windows");
+        } else if (System.lineSeparator().equals("\n")) {
+            defaultConfigContent = ResourceReader.readResourceAsString("death.config.yaml");
+        } else {
+            LOGGER.error("[BetterTips]The system line separator comes from Mars");
+            return;
+        }
+
         File gameDir = new File(".");
         File bettertipsFolder = new File(gameDir, "bettertips");
 
@@ -27,7 +34,7 @@ public class DeathConfig {
         if (!configFile.exists()) {
             try {
                 if (configFile.createNewFile() && defaultConfigContent != null) {
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
+                    try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8))) {
                         writer.write(defaultConfigContent);
                     } catch (IOException e) {
                         LOGGER.error("[BetterTips|ERROR] Failed to write to config file.", e);
@@ -190,10 +197,12 @@ public class DeathConfig {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         mapper.findAndRegisterModules(); // 查找库一类的玩意
         File configYaml = new File("bettertips/death.config.yaml");
+        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(configYaml), StandardCharsets.UTF_8);
 
         // InputStream inputStream = Files.newInputStream(Paths.get("bettertips/death.config.yaml"));
         // To fix Caused by: java.lang.ClassCastException: class java.util.LinkedHashMap cannot be cast to class net.mirolls.bettertips.death.DeathConfigYaml (java.util.LinkedHashMap is in module java.base of loader 'bootstrap'; net.mirolls.bettertips.death.DeathConfigYaml is in unnamed module of loader
-        return mapper.readValue(configYaml, DeathConfigYaml.class);
+        // return mapper.readValue(configYaml, DeathConfigYaml.class);
+        return mapper.readValue(inputStreamReader, DeathConfigYaml.class);
     }
 
     public static ObjectMapper getConfigMapper() throws IOException {
