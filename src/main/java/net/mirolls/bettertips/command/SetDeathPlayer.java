@@ -10,16 +10,18 @@ import net.mirolls.bettertips.death.DeathConfig;
 import net.mirolls.bettertips.death.DeathConfigYaml;
 import net.mirolls.bettertips.death.DeathMessage;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static net.mirolls.bettertips.BetterTips.LOGGER;
+import static net.mirolls.bettertips.command.file.Comment.readComments;
+import static net.mirolls.bettertips.command.file.Comment.writeComments;
+import static net.mirolls.bettertips.command.file.Verifier.isValidDeathYamlKey;
 
 public class SetDeathPlayer {
     public static void registerCommand() {
@@ -103,69 +105,6 @@ public class SetDeathPlayer {
         }
     }
 
-
-    private static boolean isValidDeathYamlKey(String key) {
-        String regex = "^(death\\.attack\\.|death\\.fell\\.)[._a-zA-Z]*$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(key);
-        return matcher.matches();
-    }
-
-    private static String readComments(String inputFile) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-        StringBuilder commentsBuilder = new StringBuilder();
-
-        int commentLines = determineCommentLines(inputFile);
-
-        // 逐行读取输入文件内容，提取注释
-        for (int i = 0; i < commentLines; i++) {
-            String line = reader.readLine();
-            if (line == null || line.trim().isEmpty()) {
-                break; // 如果读取到文件末尾或空行则停止
-            }
-            commentsBuilder.append(line).append(System.lineSeparator());
-        }
-
-        reader.close();
-        return commentsBuilder.toString();
-    }
-
-    private static int determineCommentLines(String inputFile) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-        int commentLines = 0;
-
-        // 根据自定义条件确定需要提取的注释行数
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (line.trim().startsWith("#")) {
-                commentLines++;
-            } else {
-                break; // 如果读取到非注释行，则停止计数
-            }
-        }
-
-        reader.close();
-        return commentLines;
-    }
-
-
-    // 写入注释到输出文件的开头
-    private static void writeComments(String comments, String outputFile) throws IOException {
-        // 读取原有的内容
-        StringBuilder contentBuilder = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new FileReader(outputFile));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            contentBuilder.append(line).append("\n");
-        }
-        reader.close();
-
-        // 将注释和原有内容写入文件
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-        writer.write(comments);
-        writer.write(contentBuilder.toString());
-        writer.close();
-    }
 
     public static DeathConfigYaml updatePlayerMessage(DeathConfigYaml config, String playerName, String key, String newMessage) {
         DeathConfigYaml updatedConfig = new DeathConfigYaml();
