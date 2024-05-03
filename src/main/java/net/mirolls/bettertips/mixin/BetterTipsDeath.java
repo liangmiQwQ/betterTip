@@ -185,12 +185,10 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
         // Mojang在他的源代码是这样写的 String string2 = string + ".player";
         // Mojang变量命名生草无比
         String deceased = string + ".player";
-        // 我这边添加一个条件，如果livingEntity2是player，并且endWith不是player，也不是arrow
-        if (livingEntity2 != null && !string.endsWith("mob") && !string.endsWith("player") && !string.endsWith("arrow")) {
+        // 我这边添加条件，并且endWith不是player，也不是arrow
+        if (livingEntity2 != null && !string.endsWith("mob") && !string.endsWith("indirectMagic") && !string.endsWith("witherSkull") && !string.endsWith("trident") && !string.endsWith("fireball") && !string.endsWith("thrown") && !string.endsWith("thorns") && !string.endsWith("player") && !string.endsWith("arrow")) {
             // 不是null，是玩家，并且结尾不是玩家
-            // 修改一下，结尾不是玩家并且不是mob，否则会出现因为mob滑入岩浆的时候bug
             return new MessageInfo(deceased, Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(livingEntity2.getDisplayName()).getString(), null);
-            // 使用该表达式仍然是有bug，可能会出现是.mob结尾，然后killerName = null
         } else if (livingEntity2 != null) {// 有主要对手，返回string，并且返回击杀者
             return new MessageInfo(string, Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(livingEntity2.getDisplayName()).getString(), null);
         }
