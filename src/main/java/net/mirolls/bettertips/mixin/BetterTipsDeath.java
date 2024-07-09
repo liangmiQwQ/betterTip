@@ -1,5 +1,6 @@
 package net.mirolls.bettertips.mixin;
 
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.*;
@@ -149,8 +150,9 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
             itemStack = ItemStack.EMPTY;
         }
 
-        if (!itemStack.isEmpty() && itemStack.hasCustomName()) {
+        if (!itemStack.isEmpty() && itemStack.contains(DataComponentTypes.CUSTOM_NAME)) {
             // 翻译⬆️ 如果有物品，且这个物品有自定义名称
+            // 1.21后 itemStack.hasCustomName() 修改为 itemStack.contains(DataComponentTypes.CUSTOM_NAME)
             return new MessageInfo(itemDeathTranslationKey, Objects.requireNonNull(this.getEntity().getDisplayName()).getString(), attackerDisplayName.getString(), itemStack.toHoverableText().getString());
         } else {
             // 如果没有，就是没有自定义物品的
@@ -176,7 +178,7 @@ public abstract class BetterTipsDeath implements BetterTipsDeathAccessor {
                 // 不是生物实体
                 itemStack = ItemStack.EMPTY;
             }
-            if (!itemStack.isEmpty() && itemStack.hasCustomName()) {
+            if (!itemStack.isEmpty() && itemStack.contains(DataComponentTypes.CUSTOM_NAME)) {
                 return new MessageInfo(string + ".item", Objects.requireNonNull(killed.getDisplayName()).getString(), Objects.requireNonNull(text).getString(), itemStack.toHoverableText().getString());
             }
         }
